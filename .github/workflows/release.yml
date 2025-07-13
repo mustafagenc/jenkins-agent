@@ -25,7 +25,10 @@ jobs:
       - name: Update Inno Setup version from tag
         run: |
           $tag = '${{ github.ref_name }}'
-          (Get-Content JenkinsAgentSetup.iss) -replace 'AppVersion=.*', "AppVersion=$tag" | Set-Content JenkinsAgentSetup.iss
+          $version = $tag.TrimStart('v')
+          (Get-Content JenkinsAgentSetup.iss) `
+            -replace 'AppVersion=.*', "AppVersion=$version" `
+            -replace 'VersionInfoVersion=.*', "VersionInfoVersion=$version" | Set-Content JenkinsAgentSetup.iss
         shell: pwsh
 
       - name: Update JenkinsAgent.csproj version from tag
