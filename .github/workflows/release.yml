@@ -37,11 +37,11 @@ jobs:
 
       - name: Commit and push version bump
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "mustafagenc"
+          git config user.email "eposta@mustafagenc.info"
           git add JenkinsAgent.csproj
           git commit -m "ci: bump version to ${{ github.ref_name }} [skip ci]" || echo "No changes to commit"
-          git push
+          git push origin HEAD:${{ github.event.repository.default_branch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
