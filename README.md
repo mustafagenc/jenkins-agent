@@ -2,7 +2,7 @@
 
 Jenkins Agent, Jenkins sunucularını izlemek ve yönetmek için geliştirilmiş kullanıcı dostu bir WPF uygulamasıdır. Uygulama sayesinde Jenkins işlerinizi kolayca takip edebilir, durumlarını anlık olarak görüntüleyebilirsiniz.
 
-## �️ Ekran Görüntüleri
+## 📸 Ekran Görüntüleri
 
 <p align="center">
   <img src="Resources/screenshots/1.png" alt="Jenkins Agent Ana Ekran" width="600" />
