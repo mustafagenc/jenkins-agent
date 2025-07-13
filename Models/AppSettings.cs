@@ -12,6 +12,6 @@ public class AppSettings
     public string LastSelectedFolderFullPath { get; set; } = "";
     public bool MinimizeToTray { get; set; } = true;
     public bool StartWithWindows { get; set; } = false;
-    public int MonitoringIntervalSeconds { get; set; } = 5;
+    public int MonitoringIntervalSeconds { get; set; } = 3;
     public DateTime LastUpdated { get; set; } = DateTime.Now;
 }

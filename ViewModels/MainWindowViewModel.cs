@@ -164,13 +164,9 @@ public class MainWindowViewModel : BaseViewModel
         OpenJenkinsHomeCommand = new RelayCommand(async () => await OpenJenkinsHomeAsync(), () => IsConnected);
 
 
-        LoadSettings();
-
-        _jobMonitorTimer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromSeconds(2)
-        };
+        _jobMonitorTimer = new DispatcherTimer();
         _jobMonitorTimer.Tick += async (s, e) => await MonitorJobsAsync();
+        LoadSettings();
     }
 
     private async Task ConnectAsync()
@@ -558,6 +554,10 @@ public class MainWindowViewModel : BaseViewModel
             LogDebug($"LoadSettings - Loaded Jenkins config. BaseUrl: '{settings.Jenkins.BaseUrl}', Username: '{settings.Jenkins.Username}'");
             LogDebug($"LoadSettings - LastSelectedFolder: '{settings.LastSelectedFolder}', LastSelectedFolderFullPath: '{settings.LastSelectedFolderFullPath}'");
             LogDebug($"LoadSettings - Settings file location: {_settingsService.GetSettingsFilePath()}");
+
+            // İzleme aralığını ayarlıyorum (varsayılan: 3 sn)
+            int intervalSec = settings.MonitoringIntervalSeconds > 0 ? settings.MonitoringIntervalSeconds : 3;
+            _jobMonitorTimer.Interval = TimeSpan.FromSeconds(intervalSec);
 
             // Check if settings are configured and auto-connect
             await CheckAndAutoConnectAsync();
