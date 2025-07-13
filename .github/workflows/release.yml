@@ -32,7 +32,7 @@ jobs:
         id: find_setup
         run: |
           $file = Get-ChildItem -Path Output -Filter *.exe | Select-Object -First 1
-          echo "::set-output name=setup_path::${{ $file.FullName }}"
+          echo "setup_path=$($file.FullName)" >> $env:GITHUB_OUTPUT
         shell: pwsh
 
       - name: Generate release notes from commits
