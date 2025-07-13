@@ -1,15 +1,25 @@
-# Jenkins Agent
+# 🚀 Jenkins Agent
 
 Jenkins Agent, Jenkins sunucularını izlemek ve yönetmek için geliştirilmiş kullanıcı dostu bir WPF uygulamasıdır. Uygulama sayesinde Jenkins işlerinizi kolayca takip edebilir, durumlarını anlık olarak görüntüleyebilirsiniz.
 
-## Derleme (Build)
+## �️ Ekran Görüntüleri
+
+<p align="center">
+  <img src="Resources/screenshots/1.png" alt="Jenkins Agent Ana Ekran" width="600" />
+</p>
+
+<p align="center">
+  <img src="Resources/screenshots/2.png" alt="Jenkins Agent Detay" width="600" />
+</p>
+
+## 🛠️ Derleme (Build)
 Projeyi derlemek için Visual Studio veya .NET CLI kullanabilirsiniz. Komut satırında aşağıdaki komutu çalıştırmanız yeterlidir:
 
 ```
 dotnet build
 ```
 
-## Çalıştırma (Run)
+## ▶️ Çalıştırma (Run)
 Uygulamayı başlatmak için aşağıdaki komutu kullanabilirsiniz:
 
 ```
@@ -18,10 +28,10 @@ dotnet run
 
 Alternatif olarak Visual Studio üzerinden F5 tuşu ile de çalıştırabilirsiniz.
 
-## Kurulum Paketi (Release) Oluşturma
+## 📦 Kurulum Paketi (Release) Oluşturma
 Kurulum paketi oluşturmak için iki yol kullanabilirsiniz:
 
-### 1. Otomatik Yöntem (Tavsiye Edilen)
+### 🤖 Otomatik Yöntem (Tavsiye Edilen)
 
 Proje klasöründe bulunan `release.ps1` PowerShell scriptini çalıştırın. Script, önce uygulamayı Release modunda derler, ardından Inno Setup ile kurulum dosyasını hazırlar:
 
@@ -29,7 +39,7 @@ Proje klasöründe bulunan `release.ps1` PowerShell scriptini çalıştırın. S
 pwsh ./release.ps1
 ```
 
-### 2. Manuel Yöntem
+### 📝 Manuel Yöntem
 
 1. Uygulamayı Release modunda derleyin:
    ```
@@ -42,10 +52,10 @@ pwsh ./release.ps1
 
 Alternatif olarak VS Code'da tanımlı "Inno Setup: Compile Script" görevini de kullanabilirsiniz.
 
-## Gereksinimler
+## ⚙️ Gereksinimler
 - .NET 6 veya üzeri
 - Jenkins sunucusu
 - Inno Setup (sadece release için)
 
-## Lisans
+## �📄 Lisans
 Bu proje [Apache License Version 2.0](LICENSE) ile lisanslanmıştır.
