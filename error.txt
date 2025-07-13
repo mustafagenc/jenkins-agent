@@ -1,1 +1,0 @@
-Bu dosya uygulama çalışırken oluşan tüm hata kayıtlarını tutar.

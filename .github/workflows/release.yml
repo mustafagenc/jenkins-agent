@@ -26,6 +26,25 @@ jobs:
           (Get-Content JenkinsAgentSetup.iss) -replace 'AppVersion=.*', \"AppVersion=$tag\" | Set-Content JenkinsAgentSetup.iss
         shell: pwsh
 
+      - name: Update JenkinsAgent.csproj version from tag
+        run: |
+          $tag = '${{ github.ref_name }}'
+          $version = $tag.TrimStart('v')
+          (Get-Content JenkinsAgent.csproj) -replace '<Version>.*</Version>', "<Version>$version</Version>" `
+                                               -replace '<AssemblyVersion>.*</AssemblyVersion>', "<AssemblyVersion>$version</AssemblyVersion>" `
+                                               -replace '<FileVersion>.*</FileVersion>', "<FileVersion>$version</FileVersion>" | Set-Content JenkinsAgent.csproj
+        shell: pwsh
+
+      - name: Commit and push version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add JenkinsAgent.csproj
+          git commit -m "ci: bump version to ${{ github.ref_name }} [skip ci]" || echo "No changes to commit"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: pwsh
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
