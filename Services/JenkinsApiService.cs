@@ -840,40 +840,4 @@ public class JenkinsApiService : IJenkinsApiService
             _apiSemaphore.Release();
         }
     }
-
-    public async Task<string> GetMetricsAsync(string metricsUrl)
-    {
-        await _apiSemaphore.WaitAsync();
-        try
-        {
-            LogDebug($"GetMetricsAsync - URL: {metricsUrl}");
-
-            using var client = SafeHttpClientFactory.CreateClient(_config);
-            using var request = SafeHttpClientFactory.CreateAuthenticatedRequest(HttpMethod.Get, metricsUrl, _config);
-
-            var response = await client.SendAsync(request);
-
-            LogDebug($"GetMetricsAsync - Response Status: {response.StatusCode}");
-
-            if (!response.IsSuccessStatusCode)
-            {
-                LogDebug($"GetMetricsAsync - Failed to get metrics: {response.StatusCode}");
-                return string.Empty;
-            }
-
-            var content = await response.Content.ReadAsStringAsync();
-            LogDebug($"GetMetricsAsync - Response length: {content.Length} characters");
-
-            return content;
-        }
-        catch (Exception ex)
-        {
-            LogDebug($"GetMetricsAsync error: {ex.Message}");
-            return string.Empty;
-        }
-        finally
-        {
-            _apiSemaphore.Release();
-        }
-    }
 }

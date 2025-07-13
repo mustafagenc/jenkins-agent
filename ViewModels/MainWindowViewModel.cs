@@ -1,6 +1,7 @@
 using JenkinsAgent.Commands;
 using JenkinsAgent.Models;
 using JenkinsAgent.Services;
+using System.Windows.Forms;
 using System.Windows.Threading;
 
 namespace JenkinsAgent.ViewModels;
@@ -228,70 +229,6 @@ public class MainWindowViewModel : BaseViewModel
         }
     }
 
-    private async Task RefreshJobsAsync()
-    {
-        if (!IsConnected) return;
-
-        IsLoading = true;
-        StatusMessage = "Job'lar yükleniyor...";
-
-        try
-        {
-            var jobs = await _jenkinsApiService.GetJobsAsync();
-            var settings = await _settingsService.LoadSettingsAsync();
-
-            foreach (var newJob in jobs)
-            {
-                var existingJob = Jobs.FirstOrDefault(j => j.Name == newJob.Name && j.FullPath == newJob.FullPath);
-
-                if (existingJob != null)
-                {
-                    existingJob.Description = newJob.Description;
-                    existingJob.LastBuild = newJob.LastBuild;
-                    existingJob.InQueue = newJob.InQueue;
-                    existingJob.IsFavorite = settings.FavoriteJobs.Contains(newJob.Name);
-
-                    existingJob.OnPropertyChanged(nameof(existingJob.IsCurrentlyBuilding));
-                    existingJob.OnPropertyChanged(nameof(existingJob.DebugStatus));
-                }
-                else
-                {
-                    newJob.IsFavorite = settings.FavoriteJobs.Contains(newJob.Name);
-
-                    newJob.OnPropertyChanged(nameof(newJob.IsCurrentlyBuilding));
-                    newJob.OnPropertyChanged(nameof(newJob.DebugStatus));
-
-                    Jobs.Add(newJob);
-                }
-            }
-
-            var jobsToRemove = Jobs.Where(j => !jobs.Any(nj => nj.Name == j.Name && nj.FullPath == j.FullPath)).ToList();
-            foreach (var jobToRemove in jobsToRemove)
-            {
-                Jobs.Remove(jobToRemove);
-                FavoriteJobs.Remove(jobToRemove);
-            }
-
-            FavoriteJobs.Clear();
-            foreach (var job in Jobs.Where(j => j.IsFavorite))
-            {
-                FavoriteJobs.Add(job);
-            }
-
-            FilterJobs();
-            StatusMessage = $"{jobs.Count} job yüklendi";
-        }
-        catch (Exception ex)
-        {
-            StatusMessage = $"Job'lar yüklenirken hata: {ex.Message}";
-            ErrorLogger.Log(ex, "RefreshJobsAsync");
-        }
-        finally
-        {
-            IsLoading = false;
-        }
-    }
-
     private static void LogDebug(string message)
     {
         System.Diagnostics.Debug.WriteLine(message);
@@ -424,6 +361,7 @@ public class MainWindowViewModel : BaseViewModel
                     {
                         var jobNameForApi = !string.IsNullOrEmpty(job.FullPath) ? job.FullPath : job.Name;
                         var latestBuild = await _jenkinsApiService.GetLastBuildAsync(jobNameForApi);
+
                         if (latestBuild != null && latestBuild.Building && latestBuild.Number > 0)
                         {
                             buildNumber = latestBuild.Number;
@@ -733,8 +671,6 @@ public class MainWindowViewModel : BaseViewModel
             foreach (var job in jobs)
             {
                 job.IsFavorite = settings.FavoriteJobs.Contains(job.FullPath);
-
-
                 Jobs.Add(job);
 
                 if (job.IsFavorite)
@@ -750,11 +686,11 @@ public class MainWindowViewModel : BaseViewModel
                 job.OnPropertyChanged(nameof(job.LastBuild));
                 job.OnPropertyChanged(nameof(job.DebugStatus));
             }
+
             StatusMessage = $"{jobs.Count} job yüklendi ({SelectedFolder.Name})";
 
             LogDebug($"LoadJobsInSelectedFolderAsync - Loaded {jobs.Count} jobs, FilteredJobs count: {FilteredJobs.Count}");
 
-            await UpdateQueueAndExecutorsAsync();
             await UpdateQueueAndExecutorsAsync();
         }
         catch (Exception ex)
@@ -965,6 +901,13 @@ public class MainWindowViewModel : BaseViewModel
 
             foreach (var jobToRemove in jobsToRemove)
             {
+                if (!jobToRemove.InQueue)
+                {
+                    NotificationService.Show(
+                                        $"Job '{jobToRemove.Name}' sonlandı",
+                                        $"Son durumu: {jobToRemove.LastBuild?.DisplayName ?? "Bilinmiyor"}", ToolTipIcon.Info);
+                }
+
                 RunningBuilds.Remove(jobToRemove);
                 LogDebug($"UpdateQueueAndExecutorsAsync - Removed completed job: {jobToRemove.Name}");
             }
@@ -1333,6 +1276,4 @@ public class MainWindowViewModel : BaseViewModel
             StatusMessage = "Jenkins ayarları yapılandırılmamış";
         }
     }
-
-
 }

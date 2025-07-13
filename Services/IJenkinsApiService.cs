@@ -96,9 +96,4 @@ public interface IJenkinsApiService
     /// Konfigürasyonu günceller
     /// </summary>
     void UpdateConfiguration(JenkinsConfig config);
-
-    /// <summary>
-    /// Jenkins metriklerini alır
-    /// </summary>
-    Task<string> GetMetricsAsync(string metricsUrl);
 }

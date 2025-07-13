@@ -9,7 +9,7 @@ namespace JenkinsAgent.Services
         private static NotifyIcon? _notifyIcon;
         private static System.Windows.Forms.Timer? _hideTimer;
 
-        public static void Show(string title, string message)
+        public static void Show(string title, string message, ToolTipIcon icon = ToolTipIcon.Info)
         {
             try
             {
@@ -21,7 +21,7 @@ namespace JenkinsAgent.Services
                 _notifyIcon.Visible = true;
                 _notifyIcon.BalloonTipTitle = title;
                 _notifyIcon.BalloonTipText = message;
-                _notifyIcon.BalloonTipIcon = ToolTipIcon.Info;
+                _notifyIcon.BalloonTipIcon = icon;
                 _notifyIcon.ShowBalloonTip(8000);
 
                 _hideTimer?.Stop();
