@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Publish Setup (Inno Setup)
+        run: |
+          iscc JenkinsAgentSetup.iss
+        shell: pwsh
+
+      - name: Find setup exe
+        id: find_setup
+        run: |
+          $file = Get-ChildItem -Path Output -Filter *.exe | Select-Object -First 1
+          echo "::set-output name=setup_path::${{ $file.FullName }}"
+        shell: pwsh
+
+      - name: Generate release notes from commits
+        id: release_notes
+        uses: mikepenz/release-changelog-builder-action@v4
+        with:
+          configuration: |
+            template: |
+              ## Değişiklikler\n{{CHANGELOG}}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          body: ${{ steps.release_notes.outputs.changelog }}
+          files: |
+            ${{ steps.find_setup.outputs.setup_path }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
