@@ -20,6 +20,12 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
+      - name: Update Inno Setup version from tag
+        run: |
+          $tag = '${{ github.ref_name }}'
+          (Get-Content JenkinsAgentSetup.iss) -replace 'AppVersion=.*', \"AppVersion=$tag\" | Set-Content JenkinsAgentSetup.iss
+        shell: pwsh
+
       - name: Build
         run: dotnet build --configuration Release --no-restore
 

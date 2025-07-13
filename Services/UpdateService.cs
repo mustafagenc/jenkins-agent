@@ -53,8 +53,7 @@ namespace JenkinsAgent.Services
             }
             catch (Exception ex)
             {
-                // throw new Exception($"Failed to fetch update info from GitHub: {ex.Message}");
-                return null;
+                throw new Exception($"Failed to fetch update info from GitHub: {ex.Message}");
             }
         }
 
