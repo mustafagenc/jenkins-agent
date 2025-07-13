@@ -1,0 +1,156 @@
+<Window x:Class="JenkinsAgent.Views.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Hakkında"
+        Height="220"
+        Width="400"
+        WindowStartupLocation="Manual"
+        ResizeMode="NoResize"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        Topmost="True">
+
+    <Window.Resources>
+        <Style x:Key="ModernButton"
+               TargetType="Button">
+            <Setter Property="Background"
+                    Value="#F5F5F5"/>
+            <Setter Property="Foreground"
+                    Value="#222"/>
+            <Setter Property="FontWeight"
+                    Value="SemiBold"/>
+            <Setter Property="BorderBrush"
+                    Value="#E0E0E0"/>
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+            <Setter Property="Padding"
+                    Value="0,2,0,2"/>
+            <Setter Property="SnapsToDevicePixels"
+                    Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#E3EFFF"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#D1E3FF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ModernButtonPrimary"
+               TargetType="Button"
+               BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background"
+                    Value="#1565C0"/>
+            <Setter Property="Foreground"
+                    Value="White"/>
+            <Setter Property="BorderBrush"
+                    Value="#1565C0"/>
+            <Setter Property="BorderThickness"
+                    Value="0"/>
+            <Setter Property="FontWeight"
+                    Value="Bold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#1976D2"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter Property="Background"
+                                        Value="#0D47A1"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ModernButtonGray"
+               TargetType="Button"
+               BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background"
+                    Value="#ECECEC"/>
+            <Setter Property="Foreground"
+                    Value="#333"/>
+            <Setter Property="BorderBrush"
+                    Value="#E0E0E0"/>
+            <Setter Property="BorderThickness"
+                    Value="1"/>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="#FAFAFA"
+            CornerRadius="18"
+            BorderBrush="#E0E0E0"
+            BorderThickness="1"
+            Padding="24"
+            SnapsToDevicePixels="True">
+        <StackPanel>
+            <StackPanel Orientation="Horizontal"
+                        Margin="0,0,0,12"
+                        VerticalAlignment="Center">
+                <Image Source="pack://application:,,,/Resources/jenkins.ico"
+                       Width="36"
+                       Height="36"
+                       Margin="0,0,12,0"/>
+                <TextBlock Text="Jenkins Agent"
+                           FontWeight="Bold"
+                           FontSize="20"
+                           Foreground="#1565C0"
+                           VerticalAlignment="Center"/>
+            </StackPanel>
+            <TextBlock x:Name="VersionTextBlock"
+                       FontSize="14"
+                       Foreground="#444"
+                       Margin="0,0,0,8"/>
+            <TextBlock Text="© 2025 Mustafa Genç"
+                       FontSize="13"
+                       Foreground="#888"/>
+            <TextBlock FontSize="12"
+                       Foreground="#1976D2"
+                       Margin="0,8,0,0">
+                <Hyperlink NavigateUri="https://github.com/mustafagenc/jenkins-agent"
+                           RequestNavigate="Hyperlink_RequestNavigate">
+                    github.com/mustafagenc/jenkins-agent
+                </Hyperlink>
+            </TextBlock>
+            <Button Content="Kapat"
+                    IsDefault="True"
+                    Width="90"
+                    Height="36"
+                    HorizontalAlignment="Right"
+                    Margin="0,18,0,0"
+                    Style="{StaticResource ModernButtonPrimary}"
+                    Click="Close_Click"/>
+        </StackPanel>
+    </Border>
+</Window>

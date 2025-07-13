@@ -1,0 +1,84 @@
+<Window x:Class="JenkinsAgent.Views.BlueOceanWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        Title="{Binding WindowTitle}" Height="800" Width="1400"
+        MinHeight="600" MinWidth="1000"
+        WindowStartupLocation="CenterScreen"
+        Icon="../Resources/jenkins.ico">
+    
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- WebView2 -->
+        <wv2:WebView2 Grid.Row="0" x:Name="BlueOceanWebView" 
+                      NavigationStarting="BlueOceanWebView_NavigationStarting"
+                      NavigationCompleted="BlueOceanWebView_NavigationCompleted"
+                      CoreWebView2InitializationCompleted="BlueOceanWebView_CoreWebView2InitializationCompleted"
+                      ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                      ScrollViewer.CanContentScroll="False"/>
+
+        <!-- Status Bar with Refresh Button -->
+        <Border Grid.Row="1" Background="#F5F5F5" BorderBrush="#E0E0E0" BorderThickness="0,1,0,0">
+            <Grid Margin="16,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <!-- Status Message with Loading Info -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="{Binding StatusMessage}" 
+                               FontSize="12" Foreground="#666" VerticalAlignment="Center"/>
+                    <ProgressBar Width="100" Height="4" IsIndeterminate="{Binding IsLoading}" 
+                                 Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                 Background="#E0E0E0" Foreground="#2196F3" Margin="8,0,8,0" VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding LoadingText}" FontSize="11" Foreground="#999" 
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+                
+                <!-- Refresh Button in Status Bar -->
+                <Button Grid.Column="2" Content="🔄" Width="32" Height="24" 
+                        Click="RefreshButton_Click" ToolTip="Sayfayı Yenile"
+                        Background="#1565C0" Foreground="White" 
+                        BorderThickness="0" FontSize="12" Margin="8,0,0,0"
+                        Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}" 
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="4">
+                                            <ContentPresenter HorizontalAlignment="Center" 
+                                                            VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#1976D2"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter Property="Background" Value="#0D47A1"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
