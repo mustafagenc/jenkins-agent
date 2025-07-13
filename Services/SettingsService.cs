@@ -50,6 +50,7 @@ public class SettingsService
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Settings load error: {ex.Message}");
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "SettingsService.LoadSettingsAsync");
             _cachedSettings = new AppSettings();
         }
         finally
@@ -88,6 +89,7 @@ public class SettingsService
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Settings save error: {ex.Message}");
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "SettingsService.SaveSettingsInternalAsync");
             throw; // Hatanın üst katmana iletilmesini istiyorum
         }
     }

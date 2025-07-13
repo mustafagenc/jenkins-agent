@@ -53,6 +53,7 @@ namespace JenkinsAgent.Services
             }
             catch (Exception ex)
             {
+                JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "UpdateService.GetRemoteUpdateInfoAsync");
                 throw new Exception($"Failed to fetch update info from GitHub: {ex.Message}");
             }
         }

@@ -65,6 +65,7 @@ public class JenkinsApiService : IJenkinsApiService
         {
             System.Diagnostics.Debug.WriteLine($"TestConnectionAsync error: {ex.GetType().Name}: {ex.Message}");
             System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "JenkinsApiService.TestConnectionAsync");
             return false;
         }
         finally
@@ -95,6 +96,7 @@ public class JenkinsApiService : IJenkinsApiService
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"GetJenkinsInfoAsync error: {ex.Message}");
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "JenkinsApiService.GetJenkinsInfoAsync");
             return null;
         }
         finally
@@ -127,6 +129,7 @@ public class JenkinsApiService : IJenkinsApiService
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"GetJobsAsync error: {ex.Message}");
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "JenkinsApiService.GetJobsAsync");
             return new List<JenkinsJob>();
         }
         finally
@@ -157,6 +160,7 @@ public class JenkinsApiService : IJenkinsApiService
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"GetJobAsync error: {ex.Message}");
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "JenkinsApiService.GetJobAsync");
             return null;
         }
         finally
@@ -218,6 +222,7 @@ public class JenkinsApiService : IJenkinsApiService
         {
             LogDebug($"BuildJobAsync error: {ex.GetType().Name}: {ex.Message}");
             LogDebug($"BuildJobAsync stack trace: {ex.StackTrace}");
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "JenkinsApiService.BuildJobAsync");
             return false;
         }
         finally
@@ -241,6 +246,7 @@ public class JenkinsApiService : IJenkinsApiService
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"BuildJobWithParametersAsync error: {ex.Message}");
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "JenkinsApiService.BuildJobWithParametersAsync");
             return false;
         }
         finally
@@ -268,6 +274,7 @@ public class JenkinsApiService : IJenkinsApiService
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"GetBuildAsync error: {ex.Message}");
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "JenkinsApiService.GetBuildAsync");
             return null;
         }
         finally
@@ -294,6 +301,7 @@ public class JenkinsApiService : IJenkinsApiService
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"GetBuildLogsAsync error: {ex.Message}");
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "JenkinsApiService.GetBuildLogsAsync");
             return $"Log alınırken hata oluştu: {ex.Message}";
         }
         finally

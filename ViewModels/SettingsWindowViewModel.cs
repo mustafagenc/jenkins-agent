@@ -177,6 +177,7 @@ public class SettingsWindowViewModel : BaseViewModel
         catch (Exception ex)
         {
             StatusMessage = $"Ayarlar yüklenirken hata: {ex.Message}";
+            ErrorLogger.Log(ex, "LoadCurrentSettings");
         }
     }
 
@@ -242,6 +243,7 @@ public class SettingsWindowViewModel : BaseViewModel
             TestStatusColor = Brushes.Red;
             IsConnected = false;
             StatusMessage = $"Bağlantı hatası: {ex.Message}";
+            ErrorLogger.Log(ex, "TestConnectionAsync");
         }
         finally
         {
@@ -267,6 +269,7 @@ public class SettingsWindowViewModel : BaseViewModel
         catch (Exception ex)
         {
             StatusMessage = $"Klasörler yüklenirken hata: {ex.Message}";
+            ErrorLogger.Log(ex, "LoadFoldersAsync");
         }
     }
 
@@ -316,6 +319,7 @@ public class SettingsWindowViewModel : BaseViewModel
         catch (Exception ex)
         {
             StatusMessage = $"Ayarlar kaydedilirken hata: {ex.Message}";
+            ErrorLogger.Log(ex, "SaveSettingsAsync");
         }
     }
 
@@ -407,6 +411,7 @@ public class SettingsWindowViewModel : BaseViewModel
         catch (Exception ex)
         {
             StatusMessage = $"Başlangıç ayarı güncellenirken hata: {ex.Message}";
+            ErrorLogger.Log(ex, "SetStartupRegistry");
         }
     }
 
@@ -417,11 +422,11 @@ public class SettingsWindowViewModel : BaseViewModel
             using var key = Registry.CurrentUser.OpenSubKey(STARTUP_KEY, false);
             return key?.GetValue(APP_NAME) != null;
         }
-        catch
+        catch (Exception ex)
         {
+            ErrorLogger.Log(ex, "GetStartupRegistry - Error reading registry");
             return false;
         }
     }
-
     #endregion
 }

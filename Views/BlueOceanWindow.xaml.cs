@@ -51,7 +51,15 @@ public partial class BlueOceanWindow : Window, INotifyPropertyChanged
         StatusMessage = "Blue Ocean yükleniyor...";
         LoadingText = "Bağlanıyor...";
 
-        InitializeWebView();
+        try
+        {
+            InitializeWebView();
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Pencere başlatılamadı: {ex.Message}";
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "BlueOceanWindow.ctor");
+        }
     }
 
     private async void InitializeWebView()
@@ -70,28 +78,37 @@ public partial class BlueOceanWindow : Window, INotifyPropertyChanged
             StatusMessage = $"WebView2 başlatılamadı: {ex.Message}";
             IsLoading = false;
             LoadingText = "Hata";
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "BlueOceanWindow.InitializeWebView");
         }
     }
 
     private void BlueOceanWebView_CoreWebView2InitializationCompleted(object? sender, CoreWebView2InitializationCompletedEventArgs e)
     {
-        if (e.IsSuccess)
+        try
         {
-            StatusMessage = "WebView2 hazır";
-            LoadingText = "Sayfa yükleniyor...";
+            if (e.IsSuccess)
+            {
+                StatusMessage = "WebView2 hazır";
+                LoadingText = "Sayfa yükleniyor...";
 
-            BlueOceanWebView.CoreWebView2.Settings.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 JenkinsAgent/1.0";
+                BlueOceanWebView.CoreWebView2.Settings.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 JenkinsAgent/1.0";
 
-            BlueOceanWebView.CoreWebView2.Settings.IsWebMessageEnabled = true;
-            BlueOceanWebView.CoreWebView2.Settings.AreDevToolsEnabled = false;
-            BlueOceanWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
-            BlueOceanWebView.CoreWebView2.Settings.AreHostObjectsAllowed = false;
+                BlueOceanWebView.CoreWebView2.Settings.IsWebMessageEnabled = true;
+                BlueOceanWebView.CoreWebView2.Settings.AreDevToolsEnabled = false;
+                BlueOceanWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = true;
+                BlueOceanWebView.CoreWebView2.Settings.AreHostObjectsAllowed = false;
+            }
+            else
+            {
+                StatusMessage = $"WebView2 başlatılamadı: {e.InitializationException?.Message}";
+                IsLoading = false;
+                LoadingText = "Hata";
+            }
         }
-        else
+        catch (Exception ex)
         {
-            StatusMessage = $"WebView2 başlatılamadı: {e.InitializationException?.Message}";
-            IsLoading = false;
-            LoadingText = "Hata";
+            StatusMessage = $"WebView2 ayarları yapılamadı: {ex.Message}";
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "BlueOceanWindow.CoreWebView2InitializationCompleted");
         }
     }
 
@@ -104,18 +121,25 @@ public partial class BlueOceanWindow : Window, INotifyPropertyChanged
 
     private async void BlueOceanWebView_NavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
     {
-        IsLoading = false;
-        LoadingText = string.Empty;
-
-        if (e.IsSuccess)
+        try
         {
-            StatusMessage = "Blue Ocean yüklendi";
+            IsLoading = false;
+            LoadingText = string.Empty;
 
-            await HideJenkinsHeaderAsync();
+            if (e.IsSuccess)
+            {
+                StatusMessage = "Blue Ocean yüklendi";
+                await HideJenkinsHeaderAsync();
+            }
+            else
+            {
+                StatusMessage = $"Sayfa yüklenemedi: {e.WebErrorStatus}";
+            }
         }
-        else
+        catch (Exception ex)
         {
-            StatusMessage = $"Sayfa yüklenemedi: {e.WebErrorStatus}";
+            StatusMessage = $"NavigationCompleted hatası: {ex.Message}";
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "BlueOceanWindow.NavigationCompleted");
         }
     }
 
@@ -282,11 +306,11 @@ public partial class BlueOceanWindow : Window, INotifyPropertyChanged
 
             await BlueOceanWebView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(hideHeaderScript);
             await BlueOceanWebView.CoreWebView2.ExecuteScriptAsync(hideHeaderScript);
-
         }
         catch (Exception ex)
         {
             StatusMessage = $"Header gizleme hatası: {ex.Message}";
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "BlueOceanWindow.HideJenkinsHeaderAsync");
         }
     }
 
@@ -300,6 +324,7 @@ public partial class BlueOceanWindow : Window, INotifyPropertyChanged
         catch (Exception ex)
         {
             StatusMessage = $"Yenileme hatası: {ex.Message}";
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "BlueOceanWindow.RefreshButton_Click");
         }
     }
 

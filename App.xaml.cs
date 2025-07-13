@@ -60,6 +60,7 @@ public partial class App : Application
         }
         catch (Exception ex)
         {
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "App.OnStartup");
             MessageBox.Show($"Uygulama başlatılırken hata oluştu: {ex.Message}", "Hata", MessageBoxButton.OK, MessageBoxImage.Error);
             Shutdown();
         }
@@ -80,6 +81,7 @@ public partial class App : Application
     private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
         e.Handled = true;
+        JenkinsAgent.ViewModels.ErrorLogger.Log(e.Exception, "App.DispatcherUnhandledException");
         ShowErrorDialog("WPF Hatası", e.Exception);
     }
 
@@ -87,6 +89,7 @@ public partial class App : Application
     {
         if (e.ExceptionObject is Exception ex)
         {
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "App.UnhandledException");
             ShowErrorDialog("Uygulama Hatası", ex);
         }
     }

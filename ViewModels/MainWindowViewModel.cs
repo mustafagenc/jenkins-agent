@@ -220,6 +220,7 @@ public class MainWindowViewModel : BaseViewModel
         {
             IsConnected = false;
             StatusMessage = $"Bağlantı hatası: {ex.Message}";
+            ErrorLogger.Log(ex, "ConnectAsync");
         }
         finally
         {
@@ -283,6 +284,7 @@ public class MainWindowViewModel : BaseViewModel
         catch (Exception ex)
         {
             StatusMessage = $"Job'lar yüklenirken hata: {ex.Message}";
+            ErrorLogger.Log(ex, "RefreshJobsAsync");
         }
         finally
         {
@@ -397,8 +399,7 @@ public class MainWindowViewModel : BaseViewModel
         catch (Exception ex)
         {
             StatusMessage = $"Job işlemi sırasında hata: {ex.Message}";
-            System.Diagnostics.Debug.WriteLine($"BuildJobAsync exception: {ex.GetType().Name}: {ex.Message}");
-            System.Diagnostics.Debug.WriteLine($"BuildJobAsync stack trace: {ex.StackTrace}");
+            ErrorLogger.Log(ex, "BuildJobAsync");
         }
     }
 
@@ -508,6 +509,7 @@ public class MainWindowViewModel : BaseViewModel
         {
             LogDebug($"StopJobAsync exception: {ex.GetType().Name}: {ex.Message}");
             LogDebug($"StopJobAsync stack trace: {ex.StackTrace}");
+            ErrorLogger.Log(ex, "StopJobAsync");
             return false;
         }
     }
@@ -567,6 +569,7 @@ public class MainWindowViewModel : BaseViewModel
             // Default settings will be used
             LogDebug($"LoadSettings - Error loading settings: {ex.Message}");
             LogDebug($"LoadSettings - Using default settings");
+            ErrorLogger.Log(ex, "LoadSettings");
 
             // Show settings warning
             ShowSettingsWarning = true;
@@ -602,6 +605,7 @@ public class MainWindowViewModel : BaseViewModel
             StatusMessage = $"Ayarlar kaydedilirken hata: {ex.Message}";
             LogDebug($"SaveSettingsAsync - Error saving settings: {ex.Message}");
             LogDebug($"SaveSettingsAsync - Error stack trace: {ex.StackTrace}");
+            ErrorLogger.Log(ex, "SaveSettingsAsync");
         }
     }
 
@@ -642,6 +646,7 @@ public class MainWindowViewModel : BaseViewModel
         {
             StatusMessage = $"Klasörler yüklenirken hata: {ex.Message}";
             LogDebug($"RefreshFoldersAsync - Error: {ex.Message}");
+            ErrorLogger.Log(ex, "RefreshFoldersAsync");
         }
         finally
         {
@@ -691,6 +696,7 @@ public class MainWindowViewModel : BaseViewModel
         catch (Exception ex)
         {
             LogDebug($"SelectSavedOrFirstFolder - Error: {ex.Message}");
+            ErrorLogger.Log(ex, "SelectSavedOrFirstFolder");
             // Hata durumunda ilk klasörü seç
             if (Folders.Any())
             {
@@ -754,6 +760,7 @@ public class MainWindowViewModel : BaseViewModel
         catch (Exception ex)
         {
             StatusMessage = $"Job'lar yüklenirken hata: {ex.Message}";
+            ErrorLogger.Log(ex, "LoadJobsInSelectedFolderAsync");
         }
         finally
         {
@@ -894,6 +901,7 @@ public class MainWindowViewModel : BaseViewModel
                 catch (Exception ex)
                 {
                     LogDebug($"MonitorJobsAsync - Error checking job '{job.Name}': {ex.Message}");
+                    ErrorLogger.Log(ex, $"MonitorJobsAsync - job: {job.Name}");
                 }
             }
 
@@ -911,6 +919,7 @@ public class MainWindowViewModel : BaseViewModel
         catch (Exception ex)
         {
             LogDebug($"MonitorJobsAsync - General error: {ex.Message}");
+            ErrorLogger.Log(ex, "MonitorJobsAsync");
         }
     }
 
@@ -995,9 +1004,10 @@ public class MainWindowViewModel : BaseViewModel
                             }
                             catch (Exception ex)
                             {
-                                LogDebug($"UpdateQueueAndExecutorsAsync - Error calculating progress for {jobName}: {ex.Message}");
-                                // Hata durumunda basit zamana dayalı hesaplama
-                                displayProgress = Math.Max(displayProgress, 10 + (DateTime.UtcNow.Second % 80));
+                            LogDebug($"UpdateQueueAndExecutorsAsync - Error calculating progress for {jobName}: {ex.Message}");
+                            ErrorLogger.Log(ex, $"UpdateQueueAndExecutorsAsync - progress for {jobName}");
+                            // Hata durumunda basit zamana dayalı hesaplama
+                            displayProgress = Math.Max(displayProgress, 10 + (DateTime.UtcNow.Second % 80));
                             }
                         }
 
@@ -1095,6 +1105,7 @@ public class MainWindowViewModel : BaseViewModel
         catch (Exception ex)
         {
             LogDebug($"UpdateQueueAndExecutorsAsync error: {ex.GetType().Name}: {ex.Message}");
+            ErrorLogger.Log(ex, "UpdateQueueAndExecutorsAsync");
         }
     }
 
