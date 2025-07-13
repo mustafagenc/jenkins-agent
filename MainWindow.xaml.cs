@@ -58,7 +58,6 @@ public partial class MainWindow : Window
             InitializeComponent();
             DataContext = viewModel;
             Title = "Jenkins Agent";
-
             // Pencereyi sistem tepsisine yakın konumlandır
             PositionWindowNearTray();
 

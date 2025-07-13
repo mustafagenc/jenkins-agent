@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:JenkinsAgent"
         xmlns:converters="clr-namespace:JenkinsAgent.Converters"
         xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
         Title="Jenkins Agent"
         Height="600"
         Width="800"
@@ -233,737 +234,743 @@
         </Style>
     </Window.Resources>
 
-    <Border CornerRadius="16" Background="#F5F5F5" BorderBrush="#E0E0E0" BorderThickness="1">
+    <Border CornerRadius="16"
+            Background="#F5F5F5"
+            BorderBrush="#E0E0E0"
+            BorderThickness="1">
         <Grid Background="Transparent">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <Border Grid.Row="0"
-                Background="#F5F5F5"
-                BorderBrush="#E0E0E0"
-                BorderThickness="0,0,0,1"
-                Padding="20"
-                Panel.ZIndex="1000"
-                CornerRadius="16,16,0,0"
-                Margin="1,1,1,0">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <StackPanel Grid.Column="0"
-                            Orientation="Horizontal">
-                    <TextBlock Text="Jenkins Agent"
-                               FontSize="24"
-                               FontWeight="Bold"
-                               Foreground="#212121"
-                               VerticalAlignment="Center"/>
-
-                    <!-- Connection Status Icon -->
-                    <Border Width="32"
-                            Height="32"
-                            CornerRadius="16"
-                            Margin="16,0,0,0"
-                            VerticalAlignment="Center"
-                            Background="{Binding IsConnected, Converter={StaticResource BoolToColorConverter}}"
-                            ToolTip="{Binding IsConnected, Converter={StaticResource BoolToTextConverter}}">
-                        <TextBlock Text="{Binding IsConnected, Converter={StaticResource BoolToConnectionIconConverter}}"
-                                   Foreground="White"
-                                   FontSize="16"
-                                   FontWeight="Bold"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
-                    </Border>
-                </StackPanel>
-
-                <!-- Jenkins Bağlantı Durumu ve Ayarlar Butonları -->
-                <StackPanel Grid.Column="1"
-                            Orientation="Horizontal"
-                            Visibility="{Binding IsConnected, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Button Background="{Binding IsConnected, Converter={StaticResource BoolToColorConverter}}"
-                            BorderThickness="0"
-                            Padding="16,8"
-                            Margin="0,0,8,0"
-                            Cursor="Hand"
-                            Command="{Binding OpenJenkinsHomeCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🏠"
-                                       FontSize="14"
-                                       Foreground="White"
-                                       Margin="0,0,8,0"/>
-                            <TextBlock Text="Jenkins Ana Sayfa"
-                                       Foreground="White"
-                                       FontSize="12"
-                                       FontWeight="SemiBold"/>
-                        </StackPanel>
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}"
-                                                    CornerRadius="8"
-                                                    Padding="{TemplateBinding Padding}">
-                                                <ContentPresenter HorizontalAlignment="Center"
-                                                                  VerticalAlignment="Center"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver"
-                                             Value="True">
-                                        <Setter Property="Background"
-                                                Value="#1976D2"/>
-                                    </Trigger>
-                                    <Trigger Property="IsPressed"
-                                             Value="True">
-                                        <Setter Property="Background"
-                                                Value="#1565C0"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                    <Button Background="#9C27B0"
-                            BorderThickness="0"
-                            Padding="16,8"
-                            Margin="0,0,8,0"
-                            Cursor="Hand"
-                            Command="{Binding OpenSettingsCommand}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="⚙"
-                                       FontSize="14"
-                                       Foreground="White"
-                                       Margin="0,0,8,0"/>
-                            <TextBlock Text="Ayarlar"
-                                       Foreground="White"
-                                       FontSize="12"
-                                       FontWeight="SemiBold"/>
-                        </StackPanel>
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="Button">
-                                            <Border Background="{TemplateBinding Background}"
-                                                    CornerRadius="8"
-                                                    Padding="{TemplateBinding Padding}">
-                                                <ContentPresenter HorizontalAlignment="Center"
-                                                                  VerticalAlignment="Center"/>
-                                            </Border>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver"
-                                             Value="True">
-                                        <Setter Property="Background"
-                                                Value="#7B1FA2"/>
-                                    </Trigger>
-                                    <Trigger Property="IsPressed"
-                                             Value="True">
-                                        <Setter Property="Background"
-                                                Value="#6A1B9A"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-
-                </StackPanel>
-            </Grid>
-        </Border>
-
-        <!-- Main Content -->
-        <Grid Grid.Row="1"
-              Margin="20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="310"/>
-            </Grid.ColumnDefinitions>
-
-            <!-- Jobs Section - Sol Taraf -->
-            <Border Grid.Column="0"
-                    Background="White"
+            <!-- Header -->
+            <Border Grid.Row="0"
+                    Background="#F5F5F5"
                     BorderBrush="#E0E0E0"
-                    BorderThickness="1"
-                    CornerRadius="8"
-                    Margin="0,0,10,0"
-                    Visibility="{Binding ShowJobsSection, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-
-                    <!-- Jobs Header -->
-                    <Border Grid.Row="0"
-                            BorderBrush="#E0E0E0"
-                            BorderThickness="0,0,0,1"
-                            Padding="16">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-
-                            <!-- Search Box -->
-                            <Border Grid.Column="0"
-                                    Background="#F8F9FA"
-                                    BorderBrush="#E0E0E0"
-                                    BorderThickness="1"
-                                    CornerRadius="4"
-                                    Margin="0,0,12,0"
-                                    Padding="8,4">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0"
-                                               Text="🔍"
-                                               FontSize="12"
-                                               Foreground="#757575"
-                                               VerticalAlignment="Center"
-                                               Margin="0,0,6,0"/>
-                                    <TextBox Grid.Column="1"
-                                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                                             FontSize="12"
-                                             BorderThickness="0"
-                                             Background="Transparent"
-                                             VerticalAlignment="Center"
-                                             VerticalContentAlignment="Center">
-                                        <TextBox.Style>
-                                            <Style TargetType="TextBox">
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="TextBox">
-                                                            <Border Background="{TemplateBinding Background}"
-                                                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                                                    BorderThickness="{TemplateBinding BorderThickness}">
-                                                                <ScrollViewer x:Name="PART_ContentHost"
-                                                                              Focusable="false"
-                                                                              HorizontalScrollBarVisibility="Hidden"
-                                                                              VerticalScrollBarVisibility="Hidden"/>
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                                <Style.Triggers>
-                                                    <Trigger Property="Text"
-                                                             Value="">
-                                                        <Setter Property="Background">
-                                                            <Setter.Value>
-                                                                <VisualBrush AlignmentX="Left"
-                                                                             AlignmentY="Center"
-                                                                             Stretch="None">
-                                                                    <VisualBrush.Visual>
-                                                                        <TextBlock Text="Job ara..."
-                                                                                   FontSize="12"
-                                                                                   Foreground="#999"
-                                                                                   Margin="2,0"/>
-                                                                    </VisualBrush.Visual>
-                                                                </VisualBrush>
-                                                            </Setter.Value>
-                                                        </Setter>
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </TextBox.Style>
-                                    </TextBox>
-                                </Grid>
-                            </Border>
-
-                            <TextBlock Grid.Column="1"
-                                       Text="{Binding FilteredJobsCount, StringFormat='{}{0} job'}"
-                                       FontSize="12"
-                                       Foreground="#757575"
-                                       VerticalAlignment="Center"
-                                       Margin="0,0,8,0"/>
-                            <Button Grid.Column="2"
-                                    Content="🔄 Yenile"
-                                    Command="{Binding RefreshJobsCommand}"
-                                    Style="{StaticResource ModernButton}"
-                                    Background="#4CAF50"
-                                    FontSize="12"/>
-                        </Grid>
-                    </Border>
-
-                    <!-- Jobs List -->
-                    <ScrollViewer Grid.Row="1"
-                                  VerticalScrollBarVisibility="Auto"
-                                  Style="{StaticResource ModernScrollViewer}">
-                        <ItemsControl ItemsSource="{Binding FilteredJobs}"
-                                      Margin="8">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Background="#F8F9FA"
-                                            BorderBrush="#E0E0E0"
-                                            BorderThickness="1"
-                                            CornerRadius="4"
-                                            Margin="2"
-                                            Padding="6">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="28"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-
-                                            <!-- Job Information -->
-                                            <StackPanel Grid.Column="0"
-                                                        Grid.Row="0"
-                                                        VerticalAlignment="Center">
-                                                <StackPanel Orientation="Horizontal"
-                                                            Margin="0,0,0,1">
-                                                    <TextBlock Text="{Binding Name}"
-                                                               FontSize="13"
-                                                               FontWeight="SemiBold"
-                                                               VerticalAlignment="Center"/>
-
-                                                    <!-- Status Badge with Icon -->
-                                                    <Border Background="{Binding Status, Converter={StaticResource JobStatusToColorConverter}}"
-                                                            CornerRadius="2"
-                                                            Padding="3,1"
-                                                            Margin="6,0,0,0">
-                                                        <StackPanel Orientation="Horizontal">
-                                                            <TextBlock Text="{Binding Status, Converter={StaticResource JobStatusToIconConverter}}"
-                                                                       Foreground="White"
-                                                                       FontSize="9"
-                                                                       Margin="0,0,2,0"/>
-                                                            <TextBlock Text="{Binding Status, Converter={StaticResource JobStatusToTextConverter}}"
-                                                                       Foreground="White"
-                                                                       FontSize="9"
-                                                                       FontWeight="Medium"/>
-                                                        </StackPanel>
-                                                    </Border>
-
-                                                    <!-- Queue Status -->
-                                                    <Border Background="#9C27B0"
-                                                            CornerRadius="2"
-                                                            Padding="3,1"
-                                                            Margin="6,0,0,0"
-                                                            Visibility="{Binding InQueue, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                        <TextBlock Text="⏳ Kuyrukta"
-                                                                   Foreground="White"
-                                                                   FontSize="9"/>
-                                                    </Border>
-                                                </StackPanel>
-
-                                                <TextBlock Text="{Binding FullPath}"
-                                                           FontSize="9"
-                                                           Foreground="#999"
-                                                           Margin="0,0,0,0"
-                                                           Visibility="{Binding FullPath, Converter={StaticResource IsNotNullOrEmptyToVisibilityConverter}}"/>
-                                            </StackPanel>
-
-                                            <!-- Action Buttons -->
-                                            <StackPanel Grid.Column="1"
-                                                        Grid.Row="0"
-                                                        Grid.RowSpan="2"
-                                                        Orientation="Horizontal"
-                                                        VerticalAlignment="Center">
-                                                <!-- Build/Cancel Button (Dynamic) -->
-                                                <Button Content="{Binding IsCurrentlyBuilding, Converter={StaticResource BuildingToButtonTextConverter}}"
-                                                        Command="{Binding DataContext.BuildJobCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                        CommandParameter="{Binding}"
-                                                        Style="{StaticResource ModernButton}"
-                                                        Background="{Binding IsCurrentlyBuilding, Converter={StaticResource BuildingToButtonColorConverter}}"
-                                                        Width="24"
-                                                        Height="24"
-                                                        FontSize="10"
-                                                        Padding="0"
-                                                        Margin="0,0,2,0"
-                                                        ToolTip="{Binding IsCurrentlyBuilding, Converter={StaticResource BuildingToButtonTooltipConverter}}"/>
-
-                                                <!-- Blue Ocean Button -->
-                                                <Button Content="🌊"
-                                                        Command="{Binding DataContext.OpenBlueOceanCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                        CommandParameter="{Binding}"
-                                                        Style="{StaticResource ModernButton}"
-                                                        Background="#1976D2"
-                                                        Width="24"
-                                                        Height="24"
-                                                        FontSize="10"
-                                                        Padding="0"
-                                                        Margin="0,0,2,0"
-                                                        ToolTip="Blue Ocean'da Aç"/>
-
-                                                <!-- Configure Button -->
-                                                <Button Content="⚙️"
-                                                        Command="{Binding DataContext.ConfigureJobCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                        CommandParameter="{Binding}"
-                                                        Style="{StaticResource ModernButton}"
-                                                        Background="#FF9800"
-                                                        Width="24"
-                                                        Height="24"
-                                                        FontSize="10"
-                                                        Padding="0"
-                                                        ToolTip="Job Configure"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-                </Grid>
-            </Border>
-
-            <!-- Right Side Panel - Sağ Taraf -->
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="65*"/>
-                    <RowDefinition Height="35*"/>
-                </Grid.RowDefinitions>
-
-                <!-- Build Executor Status - Üst (%75) -->
-                <Border Grid.Row="0"
-                        Background="White"
-                        BorderBrush="#E0E0E0"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Margin="0,0,0,5">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <Border Grid.Row="0"
-                                BorderBrush="#E0E0E0"
-                                BorderThickness="0,0,0,1"
-                                Padding="16,12">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="⚙️"
-                                           FontSize="16"
-                                           Margin="0,0,8,0"/>
-                                <TextBlock Text="Build Executor Status"
-                                           FontSize="14"
-                                           FontWeight="SemiBold"/>
-                                <TextBlock Text="{Binding RunningBuilds.Count, StringFormat=' ({0})'}"
-                                           FontSize="12"
-                                           Foreground="#757575"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
-
-                        <StackPanel Grid.Row="1"
-                                    Margin="16,12">
-                            <TextBlock Text="{Binding ExecutorSummary}"
-                                       FontSize="12"
-                                       Foreground="#666"
-                                       Margin="0,0,0,8"/>
-
-                            <!-- Running builds list -->
-                            <ItemsControl ItemsSource="{Binding RunningBuilds}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Background="#F8F9FA"
-                                                CornerRadius="4"
-                                                Padding="8"
-                                                Margin="0,2">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-
-                                                <StackPanel Grid.Column="0">
-                                                    <TextBlock Text="{Binding Name}"
-                                                               FontWeight="SemiBold"
-                                                               FontSize="11"/>
-                                                    <TextBlock Text="{Binding LastBuild.DurationText}"
-                                                               FontSize="10"
-                                                               Foreground="#28a745"
-                                                               Margin="0,2,0,0"/>
-                                                    <TextBlock Text="{Binding Description}"
-                                                               FontSize="10"
-                                                               Foreground="#666"/>
-                                                </StackPanel>
-
-                                                <StackPanel Grid.Column="1"
-                                                            Orientation="Horizontal"
-                                                            VerticalAlignment="Center">
-                                                    <TextBlock Text="🏃"
-                                                               FontSize="10"
-                                                               Margin="0,0,4,0"/>
-                                                </StackPanel>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-
-                            <!-- Empty state -->
-                            <TextBlock Text="Şu anda çalışan job yok"
-                                       FontSize="11"
-                                       Foreground="#999"
-                                       Visibility="{Binding RunningBuilds.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=0}"/>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-
-                <!-- Build Queue - Alt (%25) -->
-                <Border Grid.Row="1"
-                        Background="White"
-                        BorderBrush="#E0E0E0"
-                        BorderThickness="1"
-                        CornerRadius="8"
-                        Margin="0,5,0,0">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-
-                        <Border Grid.Row="0"
-                                BorderBrush="#E0E0E0"
-                                BorderThickness="0,0,0,1"
-                                Padding="16,12">
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock Text="⏳"
-                                           FontSize="16"
-                                           Margin="0,0,8,0"/>
-                                <TextBlock Text="Build Queue"
-                                           FontSize="14"
-                                           FontWeight="SemiBold"/>
-                                <TextBlock Text="{Binding QueuedBuilds.Count, StringFormat=' ({0})'}"
-                                           FontSize="12"
-                                           Foreground="#757575"
-                                           VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
-
-                        <StackPanel Grid.Row="1"
-                                    Margin="16,12">
-                            <TextBlock Text="{Binding QueuedBuilds.Count, StringFormat='{}{0} job kuyrukta'}"
-                                       FontSize="12"
-                                       Foreground="#666"
-                                       Margin="0,0,0,8"/>
-
-                            <!-- Queued builds list -->
-                            <ItemsControl ItemsSource="{Binding QueuedBuilds}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border Background="#FFF8E1"
-                                                CornerRadius="4"
-                                                Padding="8"
-                                                Margin="0,2">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-
-                                                <StackPanel Grid.Column="0">
-                                                    <TextBlock Text="{Binding Name}"
-                                                               FontWeight="SemiBold"
-                                                               FontSize="11"/>
-                                                    <TextBlock Text="{Binding Description}"
-                                                               FontSize="10"
-                                                               Foreground="#666"/>
-                                                </StackPanel>
-
-                                                <StackPanel Grid.Column="1"
-                                                            Orientation="Horizontal"
-                                                            VerticalAlignment="Center">
-                                                    <TextBlock Text="⏳"
-                                                               FontSize="10"
-                                                               Margin="0,0,4,0"/>
-                                                    <TextBlock Text="Bekliyor"
-                                                               FontSize="10"
-                                                               Foreground="#ff9800"/>
-                                                </StackPanel>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-
-                            <!-- Empty state -->
-                            <TextBlock Text="Kuyrukta bekleyen job yok"
-                                       FontSize="11"
-                                       Foreground="#999"
-                                       Visibility="{Binding QueuedBuilds.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=0}"/>
-                        </StackPanel>
-
-
-                    </Grid>
-                </Border>
-
-                <!-- Connection Status and Settings - Build Queue'nun altında -->
-                <!-- KALDIRILDI -->
-            </Grid>
-
-            <!-- Settings Warning (when not configured) -->
-            <Border Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    Background="White"
-                    BorderBrush="#E3F2FD"
-                    BorderThickness="2"
-                    CornerRadius="12"
-                    Padding="12"
-                    Margin="0,0,0,0"
-                    Visibility="{Binding ShowSettingsWarning, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    BorderThickness="0,0,0,1"
+                    Padding="20"
+                    Panel.ZIndex="1000"
+                    CornerRadius="16,16,0,0"
+                    Margin="1,1,1,0">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Warning Icon -->
-                    <Border Grid.Column="0"
-                            Background="#FFF3E0"
-                            BorderBrush="#FFB74D"
-                            BorderThickness="1"
-                            CornerRadius="8"
-                            Width="48"
-                            Height="48"
-                            Margin="0,0,16,0">
-                        <TextBlock Text="⚠️"
-                                   FontSize="20"
-                                   HorizontalAlignment="Center"
-                                   VerticalAlignment="Center"/>
-                    </Border>
-
-                    <!-- Warning Content -->
-                    <StackPanel Grid.Column="1"
-                                VerticalAlignment="Center">
-                        <TextBlock Text="Jenkins Bağlantısı Gerekli"
-                                   FontSize="18"
+                    <StackPanel Grid.Column="0"
+                                Orientation="Horizontal">
+                        <TextBlock Text="Jenkins Agent"
+                                   FontSize="24"
                                    FontWeight="Bold"
-                                   Foreground="#1976D2"
-                                   Margin="0,0,0,4"/>
-                        <TextBlock Text="Jenkins sunucunuza bağlanmak için önce ayarları yapılandırmanız gerekiyor."
-                                   FontSize="13"
-                                   Foreground="#666"
-                                   TextWrapping="Wrap"
-                                   LineHeight="18"/>
+                                   Foreground="#212121"
+                                   VerticalAlignment="Center"/>
+
+                        <!-- Connection Status Icon -->
+                        <Border Width="32"
+                                Height="32"
+                                CornerRadius="16"
+                                Margin="16,0,0,0"
+                                VerticalAlignment="Center"
+                                Background="{Binding IsConnected, Converter={StaticResource BoolToColorConverter}}"
+                                ToolTip="{Binding IsConnected, Converter={StaticResource BoolToTextConverter}}">
+                            <TextBlock Text="{Binding IsConnected, Converter={StaticResource BoolToConnectionIconConverter}}"
+                                       Foreground="White"
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
                     </StackPanel>
 
-                    <!-- Action Button -->
-                    <Button Grid.Column="2"
-                            Content="Ayarları Aç"
-                            Command="{Binding OpenSettingsCommand}"
-                            Style="{StaticResource ModernButton}"
-                            Background="#1976D2"
-                            Foreground="White"
-                            Padding="16,8"
-                            FontWeight="SemiBold"
-                            VerticalAlignment="Center"
-                            Margin="16,0,0,0"/>
+                    <!-- Jenkins Bağlantı Durumu ve Ayarlar Butonları -->
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                Visibility="{Binding IsConnected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Button Background="{Binding IsConnected, Converter={StaticResource BoolToColorConverter}}"
+                                BorderThickness="0"
+                                Padding="16,8"
+                                Margin="0,0,8,0"
+                                Cursor="Hand"
+                                Command="{Binding OpenJenkinsHomeCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🏠"
+                                           FontSize="14"
+                                           Foreground="White"
+                                           Margin="0,0,8,0"/>
+                                <TextBlock Text="Jenkins Ana Sayfa"
+                                           Foreground="White"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        CornerRadius="8"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center"
+                                                                      VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver"
+                                                 Value="True">
+                                            <Setter Property="Background"
+                                                    Value="#1976D2"/>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed"
+                                                 Value="True">
+                                            <Setter Property="Background"
+                                                    Value="#1565C0"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <Button Background="#9C27B0"
+                                BorderThickness="0"
+                                Padding="16,8"
+                                Margin="0,0,8,0"
+                                Cursor="Hand"
+                                Command="{Binding OpenSettingsCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="⚙"
+                                           FontSize="14"
+                                           Foreground="White"
+                                           Margin="0,0,8,0"/>
+                                <TextBlock Text="Ayarlar"
+                                           Foreground="White"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        CornerRadius="8"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center"
+                                                                      VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver"
+                                                 Value="True">
+                                            <Setter Property="Background"
+                                                    Value="#7B1FA2"/>
+                                        </Trigger>
+                                        <Trigger Property="IsPressed"
+                                                 Value="True">
+                                            <Setter Property="Background"
+                                                    Value="#6A1B9A"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+
+                    </StackPanel>
                 </Grid>
             </Border>
-        </Grid>
 
-        <!-- Status Bar -->
-        <Border Grid.Row="2"
-                Background="#263238"
-                Padding="20,8"
-                CornerRadius="0,0,16,16"
-                Margin="1,0,1,1"
-                BorderBrush="#263238"
-                BorderThickness="0">
-            <Grid>
+            <!-- Main Content -->
+            <Grid Grid.Row="1"
+                  Margin="20">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="310"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0"
-                            Orientation="Horizontal">
-                    <TextBlock Text="{Binding StatusMessage}"
-                               Foreground="White"
-                               VerticalAlignment="Center"/>
+                <!-- Jobs Section - Sol Taraf -->
+                <Border Grid.Column="0"
+                        Background="White"
+                        BorderBrush="#E0E0E0"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Margin="0,0,10,0"
+                        Visibility="{Binding ShowJobsSection, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                    <!-- Monitoring Indicator -->
-                    <Border Background="#4CAF50"
+                        <!-- Jobs Header -->
+                        <Border Grid.Row="0"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="0,0,0,1"
+                                Padding="16">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Search Box -->
+                                <Border Grid.Column="0"
+                                        Background="#F8F9FA"
+                                        BorderBrush="#E0E0E0"
+                                        BorderThickness="1"
+                                        CornerRadius="4"
+                                        Margin="0,0,12,0"
+                                        Padding="8,4">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   Text="🔍"
+                                                   FontSize="12"
+                                                   Foreground="#757575"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,6,0"/>
+                                        <TextBox Grid.Column="1"
+                                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                                 FontSize="12"
+                                                 BorderThickness="0"
+                                                 Background="Transparent"
+                                                 VerticalAlignment="Center"
+                                                 VerticalContentAlignment="Center">
+                                            <TextBox.Style>
+                                                <Style TargetType="TextBox">
+                                                    <Setter Property="Template">
+                                                        <Setter.Value>
+                                                            <ControlTemplate TargetType="TextBox">
+                                                                <Border Background="{TemplateBinding Background}"
+                                                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                                                        BorderThickness="{TemplateBinding BorderThickness}">
+                                                                    <ScrollViewer x:Name="PART_ContentHost"
+                                                                                  Focusable="false"
+                                                                                  HorizontalScrollBarVisibility="Hidden"
+                                                                                  VerticalScrollBarVisibility="Hidden"/>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="Text"
+                                                                 Value="">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <VisualBrush AlignmentX="Left"
+                                                                                 AlignmentY="Center"
+                                                                                 Stretch="None">
+                                                                        <VisualBrush.Visual>
+                                                                            <TextBlock Text="Job ara..."
+                                                                                       FontSize="12"
+                                                                                       Foreground="#999"
+                                                                                       Margin="2,0"/>
+                                                                        </VisualBrush.Visual>
+                                                                    </VisualBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBox.Style>
+                                        </TextBox>
+                                    </Grid>
+                                </Border>
+
+                                <TextBlock Grid.Column="1"
+                                           Text="{Binding FilteredJobsCount, StringFormat='{}{0} job'}"
+                                           FontSize="12"
+                                           Foreground="#757575"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,8,0"/>
+                                <Button Grid.Column="2"
+                                        Content="🔄 Yenile"
+                                        Command="{Binding RefreshJobsCommand}"
+                                        Style="{StaticResource ModernButton}"
+                                        Background="#4CAF50"
+                                        FontSize="12"/>
+                            </Grid>
+                        </Border>
+
+                        <!-- Jobs List -->
+                        <ScrollViewer Grid.Row="1"
+                                      VerticalScrollBarVisibility="Auto"
+                                      Style="{StaticResource ModernScrollViewer}">
+                            <ItemsControl ItemsSource="{Binding FilteredJobs}"
+                                          Margin="8">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#F8F9FA"
+                                                BorderBrush="#E0E0E0"
+                                                BorderThickness="1"
+                                                CornerRadius="4"
+                                                Margin="2"
+                                                Padding="6">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="28"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+                                                <!-- Job Information -->
+                                                <StackPanel Grid.Column="0"
+                                                            Grid.Row="0"
+                                                            VerticalAlignment="Center">
+                                                    <StackPanel Orientation="Horizontal"
+                                                                Margin="0,0,0,1">
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   FontSize="13"
+                                                                   FontWeight="SemiBold"
+                                                                   VerticalAlignment="Center"/>
+
+                                                        <!-- Status Badge with Icon -->
+                                                        <Border Background="{Binding Status, Converter={StaticResource JobStatusToColorConverter}}"
+                                                                CornerRadius="2"
+                                                                Padding="3,1"
+                                                                Margin="6,0,0,0">
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding Status, Converter={StaticResource JobStatusToIconConverter}}"
+                                                                           Foreground="White"
+                                                                           FontSize="9"
+                                                                           Margin="0,0,2,0"/>
+                                                                <TextBlock Text="{Binding Status, Converter={StaticResource JobStatusToTextConverter}}"
+                                                                           Foreground="White"
+                                                                           FontSize="9"
+                                                                           FontWeight="Medium"/>
+                                                            </StackPanel>
+                                                        </Border>
+
+                                                        <!-- Queue Status -->
+                                                        <Border Background="#9C27B0"
+                                                                CornerRadius="2"
+                                                                Padding="3,1"
+                                                                Margin="6,0,0,0"
+                                                                Visibility="{Binding InQueue, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                                            <TextBlock Text="⏳ Kuyrukta"
+                                                                       Foreground="White"
+                                                                       FontSize="9"/>
+                                                        </Border>
+                                                    </StackPanel>
+
+                                                    <TextBlock Text="{Binding FullPath}"
+                                                               FontSize="9"
+                                                               Foreground="#999"
+                                                               Margin="0,0,0,0"
+                                                               Visibility="{Binding FullPath, Converter={StaticResource IsNotNullOrEmptyToVisibilityConverter}}"/>
+                                                </StackPanel>
+
+                                                <!-- Action Buttons -->
+                                                <StackPanel Grid.Column="1"
+                                                            Grid.Row="0"
+                                                            Grid.RowSpan="2"
+                                                            Orientation="Horizontal"
+                                                            VerticalAlignment="Center">
+                                                    <!-- Build/Cancel Button (Dynamic) -->
+                                                    <Button Content="{Binding IsCurrentlyBuilding, Converter={StaticResource BuildingToButtonTextConverter}}"
+                                                            Command="{Binding DataContext.BuildJobCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding}"
+                                                            Style="{StaticResource ModernButton}"
+                                                            Background="{Binding IsCurrentlyBuilding, Converter={StaticResource BuildingToButtonColorConverter}}"
+                                                            Width="24"
+                                                            Height="24"
+                                                            FontSize="10"
+                                                            Padding="0"
+                                                            Margin="0,0,2,0"
+                                                            ToolTip="{Binding IsCurrentlyBuilding, Converter={StaticResource BuildingToButtonTooltipConverter}}"/>
+
+                                                    <!-- Blue Ocean Button -->
+                                                    <Button Content="🌊"
+                                                            Command="{Binding DataContext.OpenBlueOceanCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding}"
+                                                            Style="{StaticResource ModernButton}"
+                                                            Background="#1976D2"
+                                                            Width="24"
+                                                            Height="24"
+                                                            FontSize="10"
+                                                            Padding="0"
+                                                            Margin="0,0,2,0"
+                                                            ToolTip="Blue Ocean'da Aç"/>
+
+                                                    <!-- Configure Button -->
+                                                    <Button Content="⚙️"
+                                                            Command="{Binding DataContext.ConfigureJobCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                                            CommandParameter="{Binding}"
+                                                            Style="{StaticResource ModernButton}"
+                                                            Background="#FF9800"
+                                                            Width="24"
+                                                            Height="24"
+                                                            FontSize="10"
+                                                            Padding="0"
+                                                            ToolTip="Job Configure"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+
+                <!-- Right Side Panel - Sağ Taraf -->
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="65*"/>
+                        <RowDefinition Height="35*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Build Executor Status - Üst (%75) -->
+                    <Border Grid.Row="0"
+                            Background="White"
+                            BorderBrush="#E0E0E0"
+                            BorderThickness="1"
                             CornerRadius="8"
-                            Padding="6,2"
-                            Margin="12,0,0,0"
-                            Visibility="{Binding IsMonitoring, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="🔍"
-                                       FontSize="10"
-                                       Margin="0,0,4,0"/>
-                            <TextBlock Text="İzleniyor"
-                                       Foreground="White"
-                                       FontSize="10"
-                                       FontWeight="Medium"/>
-                        </StackPanel>
+                            Margin="0,0,0,5">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Row="0"
+                                    BorderBrush="#E0E0E0"
+                                    BorderThickness="0,0,0,1"
+                                    Padding="16,12">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="⚙️"
+                                               FontSize="16"
+                                               Margin="0,0,8,0"/>
+                                    <TextBlock Text="Build Executor Status"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding RunningBuilds.Count, StringFormat=' ({0})'}"
+                                               FontSize="12"
+                                               Foreground="#757575"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <StackPanel Grid.Row="1"
+                                        Margin="16,12">
+                                <TextBlock Text="{Binding ExecutorSummary}"
+                                           FontSize="12"
+                                           Foreground="#666"
+                                           Margin="0,0,0,8"/>
+
+                                <!-- Running builds list -->
+                                <ItemsControl ItemsSource="{Binding RunningBuilds}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="#F8F9FA"
+                                                    CornerRadius="4"
+                                                    Padding="8"
+                                                    Margin="0,2">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <StackPanel Grid.Column="0">
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   FontWeight="SemiBold"
+                                                                   FontSize="11"/>
+                                                        <TextBlock Text="{Binding LastBuild.DurationText}"
+                                                                   FontSize="10"
+                                                                   Foreground="#28a745"
+                                                                   Margin="0,2,0,0"/>
+                                                        <TextBlock Text="{Binding Description}"
+                                                                   FontSize="10"
+                                                                   Foreground="#666"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="1"
+                                                                Orientation="Horizontal"
+                                                                VerticalAlignment="Center">
+                                                        <!-- <TextBlock Text="🏃"
+                                                               FontSize="10"
+                                                               Margin="0,0,4,0"/> -->
+                                                        <Image gif:ImageBehavior.AnimatedSource="/Resources/running.gif"
+       Width="24"
+       Height="24" />
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- Empty state -->
+                                <TextBlock Text="Şu anda çalışan job yok"
+                                           FontSize="11"
+                                           Foreground="#999"
+                                           Visibility="{Binding RunningBuilds.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=0}"/>
+                            </StackPanel>
+                        </Grid>
                     </Border>
-                </StackPanel>
 
-                <StackPanel Grid.Column="1"
-                            Orientation="Horizontal"
-                            Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBlock Text="Yükleniyor..."
-                               Foreground="White"
-                               VerticalAlignment="Center"
-                               Margin="0,0,8,0"/>
-                    <ProgressBar Width="100"
-                                 Height="4"
-                                 IsIndeterminate="True"/>
-                </StackPanel>
+                    <!-- Build Queue - Alt (%25) -->
+                    <Border Grid.Row="1"
+                            Background="White"
+                            BorderBrush="#E0E0E0"
+                            BorderThickness="1"
+                            CornerRadius="8"
+                            Margin="0,5,0,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <Border Grid.Row="0"
+                                    BorderBrush="#E0E0E0"
+                                    BorderThickness="0,0,0,1"
+                                    Padding="16,12">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="⏳"
+                                               FontSize="16"
+                                               Margin="0,0,8,0"/>
+                                    <TextBlock Text="Build Queue"
+                                               FontSize="14"
+                                               FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding QueuedBuilds.Count, StringFormat=' ({0})'}"
+                                               FontSize="12"
+                                               Foreground="#757575"
+                                               VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <StackPanel Grid.Row="1"
+                                        Margin="16,12">
+                                <TextBlock Text="{Binding QueuedBuilds.Count, StringFormat='{}{0} job kuyrukta'}"
+                                           FontSize="12"
+                                           Foreground="#666"
+                                           Margin="0,0,0,8"/>
+
+                                <!-- Queued builds list -->
+                                <ItemsControl ItemsSource="{Binding QueuedBuilds}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="#FFF8E1"
+                                                    CornerRadius="4"
+                                                    Padding="8"
+                                                    Margin="0,2">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <StackPanel Grid.Column="0">
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   FontWeight="SemiBold"
+                                                                   FontSize="11"/>
+                                                        <TextBlock Text="{Binding Description}"
+                                                                   FontSize="10"
+                                                                   Foreground="#666"/>
+                                                    </StackPanel>
+
+                                                    <StackPanel Grid.Column="1"
+                                                                Orientation="Horizontal"
+                                                                VerticalAlignment="Center">
+                                                        <TextBlock Text="⏳"
+                                                                   FontSize="10"
+                                                                   Margin="0,0,4,0"/>
+                                                        <TextBlock Text="Bekliyor"
+                                                                   FontSize="10"
+                                                                   Foreground="#ff9800"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <!-- Empty state -->
+                                <TextBlock Text="Kuyrukta bekleyen job yok"
+                                           FontSize="11"
+                                           Foreground="#999"
+                                           Visibility="{Binding QueuedBuilds.Count, Converter={StaticResource CountToVisibilityConverter}, ConverterParameter=0}"/>
+                            </StackPanel>
+
+
+                        </Grid>
+                    </Border>
+
+                    <!-- Connection Status and Settings - Build Queue'nun altında -->
+                    <!-- KALDIRILDI -->
+                </Grid>
+
+                <!-- Settings Warning (when not configured) -->
+                <Border Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Background="White"
+                        BorderBrush="#E3F2FD"
+                        BorderThickness="2"
+                        CornerRadius="12"
+                        Padding="12"
+                        Margin="0,0,0,0"
+                        Visibility="{Binding ShowSettingsWarning, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Warning Icon -->
+                        <Border Grid.Column="0"
+                                Background="#FFF3E0"
+                                BorderBrush="#FFB74D"
+                                BorderThickness="1"
+                                CornerRadius="8"
+                                Width="48"
+                                Height="48"
+                                Margin="0,0,16,0">
+                            <TextBlock Text="⚠️"
+                                       FontSize="20"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+
+                        <!-- Warning Content -->
+                        <StackPanel Grid.Column="1"
+                                    VerticalAlignment="Center">
+                            <TextBlock Text="Jenkins Bağlantısı Gerekli"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="#1976D2"
+                                       Margin="0,0,0,4"/>
+                            <TextBlock Text="Jenkins sunucunuza bağlanmak için önce ayarları yapılandırmanız gerekiyor."
+                                       FontSize="13"
+                                       Foreground="#666"
+                                       TextWrapping="Wrap"
+                                       LineHeight="18"/>
+                        </StackPanel>
+
+                        <!-- Action Button -->
+                        <Button Grid.Column="2"
+                                Content="Ayarları Aç"
+                                Command="{Binding OpenSettingsCommand}"
+                                Style="{StaticResource ModernButton}"
+                                Background="#1976D2"
+                                Foreground="White"
+                                Padding="16,8"
+                                FontWeight="SemiBold"
+                                VerticalAlignment="Center"
+                                Margin="16,0,0,0"/>
+                    </Grid>
+                </Border>
             </Grid>
-        </Border>
 
-        <!-- Sistem Tepsisi İkonu -->
-        <tb:TaskbarIcon x:Name="TrayIcon"
-                        IconSource="Resources/jenkins.ico"
-                        ToolTipText="Jenkins Agent"
-                        DoubleClickCommand="{Binding ShowWindowCommand}"
-                        TrayLeftMouseDown="TrayIcon_TrayLeftMouseDown"
-                        Visibility="Visible">
-            <tb:TaskbarIcon.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Uygulamayı Göster"
-                              Command="{Binding ShowWindowCommand}">
-                        <MenuItem.Icon>
-                            <TextBlock Text="👁️"
-                                       FontSize="14"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator/>
-                    <MenuItem Header="Ayarlar"
-                              Command="{Binding OpenSettingsCommand}">
-                        <MenuItem.Icon>
-                            <TextBlock Text="🛠️"
-                                       FontSize="14"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <MenuItem Header="Hakkında"
-                              Command="{Binding OpenAboutCommand}">
-                        <MenuItem.Icon>
-                            <TextBlock Text="🧑‍💻"
-                                       FontSize="14"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                    <Separator/>
-                    <MenuItem Header="Çıkış"
-                              Command="{Binding ExitCommand}">
-                        <MenuItem.Icon>
-                            <TextBlock Text="🚪"
-                                       FontSize="14"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </tb:TaskbarIcon.ContextMenu>
-        </tb:TaskbarIcon>
+            <!-- Status Bar -->
+            <Border Grid.Row="2"
+                    Background="#263238"
+                    Padding="20,8"
+                    CornerRadius="0,0,16,16"
+                    Margin="1,0,1,1"
+                    BorderBrush="#263238"
+                    BorderThickness="0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0"
+                                Orientation="Horizontal">
+                        <TextBlock Text="{Binding StatusMessage}"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"/>
+
+                        <!-- Monitoring Indicator -->
+                        <Border Background="#4CAF50"
+                                CornerRadius="8"
+                                Padding="6,2"
+                                Margin="12,0,0,0"
+                                Visibility="{Binding IsMonitoring, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🔍"
+                                           FontSize="10"
+                                           Margin="0,0,4,0"/>
+                                <TextBlock Text="İzleniyor"
+                                           Foreground="White"
+                                           FontSize="10"
+                                           FontWeight="Medium"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock Text="Yükleniyor..."
+                                   Foreground="White"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,8,0"/>
+                        <ProgressBar Width="100"
+                                     Height="4"
+                                     IsIndeterminate="True"/>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Sistem Tepsisi İkonu -->
+            <tb:TaskbarIcon x:Name="TrayIcon"
+                            IconSource="Resources/jenkins.ico"
+                            ToolTipText="Jenkins Agent"
+                            DoubleClickCommand="{Binding ShowWindowCommand}"
+                            TrayLeftMouseDown="TrayIcon_TrayLeftMouseDown"
+                            Visibility="Visible">
+                <tb:TaskbarIcon.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Uygulamayı Göster"
+                                  Command="{Binding ShowWindowCommand}">
+                            <MenuItem.Icon>
+                                <TextBlock Text="👁️"
+                                           FontSize="14"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem Header="Ayarlar"
+                                  Command="{Binding OpenSettingsCommand}">
+                            <MenuItem.Icon>
+                                <TextBlock Text="🛠️"
+                                           FontSize="14"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Hakkında"
+                                  Command="{Binding OpenAboutCommand}">
+                            <MenuItem.Icon>
+                                <TextBlock Text="🧑‍💻"
+                                           FontSize="14"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator/>
+                        <MenuItem Header="Çıkış"
+                                  Command="{Binding ExitCommand}">
+                            <MenuItem.Icon>
+                                <TextBlock Text="🚪"
+                                           FontSize="14"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </tb:TaskbarIcon.ContextMenu>
+            </tb:TaskbarIcon>
         </Grid>
     </Border>
 </Window>

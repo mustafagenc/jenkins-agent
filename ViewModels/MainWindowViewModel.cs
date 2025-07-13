@@ -165,7 +165,7 @@ public class MainWindowViewModel : BaseViewModel
 
 
         _jobMonitorTimer = new DispatcherTimer();
-        _jobMonitorTimer.Tick += async (s, e) => await MonitorJobsAsync();
+        _jobMonitorTimer.Tick += async (s, e) => await LoadJobsInSelectedFolderAsync();
         LoadSettings();
     }
 
@@ -908,12 +908,11 @@ public class MainWindowViewModel : BaseViewModel
             // Queue ve executor bilgilerini güncelle
             await UpdateQueueAndExecutorsAsync();
 
-            // Hiçbir job çalışmıyorsa monitoring'i durdur
+            // Otomatik izleme her zaman devam etsin, sadece kullanıcı durdurursa dursun
             if (!hasRunningJobs)
             {
-                LogDebug("MonitorJobsAsync - No more running jobs, stopping monitoring");
-                StopMonitoring();
-                StatusMessage = "Tüm job'lar tamamlandı - İzleme durduruldu";
+                LogDebug("MonitorJobsAsync - No more running jobs, but monitoring continues");
+                StatusMessage = "Tüm job'lar tamamlandı - İzleme devam ediyor";
             }
         }
         catch (Exception ex)
