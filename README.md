@@ -57,5 +57,5 @@ Alternatif olarak VS Code'da tanımlı "Inno Setup: Compile Script" görevini de
 - Jenkins sunucusu
 - Inno Setup (sadece release için)
 
-## �📄 Lisans
+## 📄 Lisans
 Bu proje [Apache License Version 2.0](LICENSE) ile lisanslanmıştır.
