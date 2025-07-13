@@ -67,7 +67,7 @@ jobs:
         id: release_notes
         run: |
           $tag = "${{ github.ref_name }}"
-          pwsh ./scripts/generate_release_notes.ps1 $tag | Out-File -FilePath release-notes.md -Encoding utf8
+          pwsh ./Scripts/generate_release_notes.ps1 $tag | Out-File -FilePath release-notes.md -Encoding utf8
         shell: pwsh
 
       - name: Read release notes

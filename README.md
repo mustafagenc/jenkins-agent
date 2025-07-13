@@ -36,7 +36,7 @@ Kurulum paketi oluşturmak için iki yol kullanabilirsiniz:
 Proje klasöründe bulunan `release.ps1` PowerShell scriptini çalıştırın. Script, önce uygulamayı Release modunda derler, ardından Inno Setup ile kurulum dosyasını hazırlar:
 
 ```
-pwsh ./scripts/release.ps1
+pwsh ./Scripts/release.ps1
 ```
 
 ### 📝 Manuel Yöntem

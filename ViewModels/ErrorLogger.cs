@@ -1,6 +1,3 @@
-using System;
-using System.IO;
-
 namespace JenkinsAgent.ViewModels
 {
     public static class ErrorLogger
@@ -12,6 +9,10 @@ namespace JenkinsAgent.ViewModels
             try
             {
                 var message = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {context ?? "Error"}: {ex.GetType().Name}: {ex.Message}\n{ex.StackTrace}\n";
+                if (!File.Exists(ErrorLogPath))
+                {
+                    using (File.Create(ErrorLogPath)) { }
+                }
                 File.AppendAllText(ErrorLogPath, message);
             }
             catch
@@ -24,6 +25,10 @@ namespace JenkinsAgent.ViewModels
             try
             {
                 var log = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}] {message}\n";
+                if (!File.Exists(ErrorLogPath))
+                {
+                    using (File.Create(ErrorLogPath)) { }
+                }
                 File.AppendAllText(ErrorLogPath, log);
             }
             catch

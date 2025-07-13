@@ -12,7 +12,7 @@ if ($LASTEXITCODE -ne 0) {
 # Inno Setup ile kurulum dosyasını oluştur
 Write-Host "[2/2] Inno Setup ile kurulum paketi hazırlanıyor..."
 $innoPath = "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
-$issFile = "JenkinsAgentSetup.iss"
+$issFile = Join-Path $PSScriptRoot "..\JenkinsAgentSetup.iss"
 
 if (!(Test-Path $innoPath)) {
     Write-Host "Inno Setup bulunamadı: $innoPath" -ForegroundColor Red

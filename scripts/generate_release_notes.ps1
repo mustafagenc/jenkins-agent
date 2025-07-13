@@ -1,5 +1,5 @@
 # Simple release notes generator for Jenkins Agent (PowerShell)
-# Usage: .\scripts\generate_release_notes.ps1 v1.2.3
+# Usage: .\Scripts\generate_release_notes.ps1 v1.2.3
 
 param(
     [Parameter(Mandatory = $true)]
@@ -47,13 +47,13 @@ Write-Output ""
 Write-Output "---"
 Write-Output "### Kurulum"
 Write-Output "- Son sürüm .exe dosyasını [Releases](https://github.com/mustafagenc/jenkins-agent/releases) sayfasından indirin."
-Write-Output "- Kurulum için: İndirilen JenkinsAgentSetup.exe dosyasını çalıştırın."
+Write-Output "- Kurulum için: İndirilen JenkinsAgentSetup_$Tag.exe dosyasını çalıştırın."
 Write-Output "- Geliştiriciler için:"
 Write-Output '  ```bash'
 Write-Output '  git clone https://github.com/mustafagenc/jenkins-agent.git'
 Write-Output '  cd jenkins-agent'
 Write-Output '  dotnet restore && dotnet build -c Release'
-Write-Output '  cd bin/Release/net6.0-windows'
+Write-Output '  cd bin/Release/net9.0-windows'
 Write-Output '  JenkinsAgent.exe'
 Write-Output '  ```'
 Write-Output ""
