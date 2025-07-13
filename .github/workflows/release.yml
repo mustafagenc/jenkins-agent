@@ -62,20 +62,29 @@ jobs:
           echo "setup_path=$($file.FullName)" >> $env:GITHUB_OUTPUT
         shell: pwsh
 
-      - name: Generate release notes from commits
+
+      - name: Generate release notes (PowerShell)
         id: release_notes
-        uses: mikepenz/release-changelog-builder-action@v4
-        with:
-          configuration: |
-            template: |
-              ## Değişiklikler\n{{CHANGELOG}}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          pwsh ./scripts/generate_release_notes.ps1 $tag | Out-File -FilePath release-notes.md -Encoding utf8
+        shell: pwsh
+
+      - name: Read release notes
+        id: read_release_notes
+        run: |
+          $body = Get-Content release-notes.md -Raw
+          echo "release_body<<EOF" >> $env:GITHUB_OUTPUT
+          echo "$body" >> $env:GITHUB_OUTPUT
+          echo "EOF" >> $env:GITHUB_OUTPUT
+        shell: pwsh
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
-          body: ${{ steps.release_notes.outputs.changelog }}
+          body: ${{ steps.read_release_notes.outputs.release_body }}
           files: |
             ${{ steps.find_setup.outputs.setup_path }}
         env:
