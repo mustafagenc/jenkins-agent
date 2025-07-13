@@ -777,7 +777,6 @@ public class MainWindowViewModel : BaseViewModel
         StatusMessage = "Job izleme başlatıldı - Job durumları 2 saniyede bir kontrol ediliyor";
         LogDebug("Job monitoring started");
 
-        // İlk queue ve executor güncellemesini yap
         await UpdateQueueAndExecutorsAsync();
     }
 
@@ -788,11 +787,9 @@ public class MainWindowViewModel : BaseViewModel
         IsMonitoring = false;
         _jobMonitorTimer.Stop();
 
-        // Queue ve running builds listelerini temizle
         QueuedBuilds.Clear();
         RunningBuilds.Clear();
 
-        // Executor istatistiklerini sıfırla
         TotalExecutors = 0;
         BusyExecutors = 0;
         OnPropertyChanged(nameof(IdleExecutors));
@@ -800,126 +797,6 @@ public class MainWindowViewModel : BaseViewModel
 
         StatusMessage = "Job izleme durduruldu";
         LogDebug("Job monitoring stopped");
-    }
-
-    private async Task MonitorJobsAsync()
-    {
-        if (!IsConnected || !IsMonitoring) return;
-
-        try
-        {
-            LogDebug("MonitorJobsAsync - Checking job statuses");
-
-            // Tüm job'ları kontrol et, sadece çalışan olanları değil
-            var jobsToCheck = Jobs.ToList();
-
-            if (!jobsToCheck.Any())
-            {
-                LogDebug("MonitorJobsAsync - No jobs to check");
-                return;
-            }
-
-            LogDebug($"MonitorJobsAsync - Checking {jobsToCheck.Count} jobs");
-            var hasRunningJobs = false;
-
-            foreach (var job in jobsToCheck)
-            {
-                try
-                {
-                    // Her job için güncel durumu al
-                    var jobName = !string.IsNullOrEmpty(job.FullPath) ? job.FullPath : job.Name;
-                    var lastBuild = await _jenkinsApiService.GetLastBuildAsync(jobName);
-
-                    if (lastBuild != null)
-                    {
-                        var previousStatus = job.Status;
-                        var wasBuilding = job.LastBuild?.Building ?? false;
-                        var wasInQueue = job.InQueue;
-
-                        // Job'ın bilgilerini güncelle - property change notifications tetiklemek için
-                        if (job.LastBuild == null || job.LastBuild.Number != lastBuild.Number || job.LastBuild.Building != lastBuild.Building)
-                        {
-                            job.LastBuild = lastBuild; // Bu otomatik olarak UI'ı güncelleyecek
-                        }
-                        else
-                        {
-                            // Sadece building durumu değiştiyse
-                            job.LastBuild.Building = lastBuild.Building;
-                        }
-
-                        // Eğer job çalışıyorsa süre güncellemesini tetikle
-                        if (job.LastBuild.Building)
-                        {
-                            job.LastBuild.OnPropertyChanged(nameof(job.LastBuild.DurationText));
-                            job.LastBuild.OnPropertyChanged(nameof(job.LastBuild.RunningDuration));
-                        }
-
-                        // Queue status güncelleme - basit kontrol
-                        // Job building değilse ve önceki durumu farklısa queue status'u kontrol et
-                        if (!lastBuild.Building && job.Status != JobStatus.Building)
-                        {
-                            job.InQueue = false;
-                        }
-
-                        // Status değişikliklerini kontrol et
-                        if (previousStatus != job.Status || wasBuilding != lastBuild.Building || wasInQueue != job.InQueue)
-                        {
-                            LogDebug($"MonitorJobsAsync - Job '{job.Name}' status changed: {previousStatus} -> {job.Status}, Building: {wasBuilding} -> {lastBuild.Building}, InQueue: {wasInQueue} -> {job.InQueue}");
-
-                            if (!lastBuild.Building && wasBuilding)
-                            {
-                                // Build tamamlandı
-                                var result = lastBuild.Result?.ToLower() == "success" ? "başarılı" : "başarısız";
-                                StatusMessage = $"{job.Name} job'ı tamamlandı - {result}";
-                                // Tray bildirimi göster
-                                var mainWindow = System.Windows.Application.Current?.MainWindow as JenkinsAgent.MainWindow;
-                                if (mainWindow != null)
-                                {
-                                    mainWindow.ShowNotification($"{job.Name} job'ı tamamlandı", $"Sonuç: {result}", job.Color);
-                                }
-                                else
-                                {
-                                    LogDebug("MonitorJobsAsync - MainWindow not found for notification");
-                                }
-                                LogDebug($"MonitorJobsAsync - Job '{job.Name}' completed with result: {lastBuild.Result}");
-                            }
-                            else if (lastBuild.Building && !wasBuilding)
-                            {
-                                // Build başladı
-                                StatusMessage = $"{job.Name} job'ı çalışmaya başladı";
-                                LogDebug($"MonitorJobsAsync - Job '{job.Name}' started building");
-                            }
-                        }
-
-                        // Çalışan veya kuyrukta olan job var mı kontrol et
-                        if (lastBuild.Building || job.InQueue)
-                        {
-                            hasRunningJobs = true;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogDebug($"MonitorJobsAsync - Error checking job '{job.Name}': {ex.Message}");
-                    ErrorLogger.Log(ex, $"MonitorJobsAsync - job: {job.Name}");
-                }
-            }
-
-            // Queue ve executor bilgilerini güncelle
-            await UpdateQueueAndExecutorsAsync();
-
-            // Otomatik izleme her zaman devam etsin, sadece kullanıcı durdurursa dursun
-            if (!hasRunningJobs)
-            {
-                LogDebug("MonitorJobsAsync - No more running jobs, but monitoring continues");
-                StatusMessage = "Tüm job'lar tamamlandı - İzleme devam ediyor";
-            }
-        }
-        catch (Exception ex)
-        {
-            LogDebug($"MonitorJobsAsync - General error: {ex.Message}");
-            ErrorLogger.Log(ex, "MonitorJobsAsync");
-        }
     }
 
     private async Task UpdateQueueAndExecutorsAsync()
@@ -1003,10 +880,10 @@ public class MainWindowViewModel : BaseViewModel
                             }
                             catch (Exception ex)
                             {
-                            LogDebug($"UpdateQueueAndExecutorsAsync - Error calculating progress for {jobName}: {ex.Message}");
-                            ErrorLogger.Log(ex, $"UpdateQueueAndExecutorsAsync - progress for {jobName}");
-                            // Hata durumunda basit zamana dayalı hesaplama
-                            displayProgress = Math.Max(displayProgress, 10 + (DateTime.UtcNow.Second % 80));
+                                LogDebug($"UpdateQueueAndExecutorsAsync - Error calculating progress for {jobName}: {ex.Message}");
+                                ErrorLogger.Log(ex, $"UpdateQueueAndExecutorsAsync - progress for {jobName}");
+                                // Hata durumunda basit zamana dayalı hesaplama
+                                displayProgress = Math.Max(displayProgress, 10 + (DateTime.UtcNow.Second % 80));
                             }
                         }
 
@@ -1140,7 +1017,6 @@ public class MainWindowViewModel : BaseViewModel
         }
     }
 
-    // FilterJobs method to filter jobs based on search text
     private void FilterJobs()
     {
         FilteredJobs.Clear();

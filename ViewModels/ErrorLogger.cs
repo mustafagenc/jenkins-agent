@@ -16,7 +16,6 @@ namespace JenkinsAgent.ViewModels
             }
             catch
             {
-                // Swallow logging errors
             }
         }
 
@@ -29,7 +28,6 @@ namespace JenkinsAgent.ViewModels
             }
             catch
             {
-                // Swallow logging errors
             }
         }
     }

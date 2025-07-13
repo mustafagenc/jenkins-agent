@@ -11,46 +11,6 @@ namespace JenkinsAgent;
 /// </summary>
 public partial class MainWindow : Window
 {
-    // ViewModel'dan çağrılabilen tray bildirim fonksiyonu
-    public void ShowNotification(string title, string message, string? color = null)
-    {
-        // Renk parametresi şimdilik kullanılmıyor, istenirse ikon veya balon rengi için eklenebilir
-        ShowTrayNotification(title, message);
-    }
-
-    // Sistem tepsisi balon bildirimi gösterir
-    private static void ShowTrayNotification(string title, string message)
-    {
-        // NotifyIcon sadece WinForms'da var, WPF'de elle eklenmeli
-        var notifyIcon = new System.Windows.Forms.NotifyIcon();
-        notifyIcon.BalloonTipTitle = title;
-        notifyIcon.BalloonTipText = message;
-        notifyIcon.Visible = true;
-        // Uygulama ikonu varsa kullan
-        try
-        {
-            notifyIcon.Icon = new System.Drawing.Icon("Resources/jenkins.ico");
-        }
-        catch { }
-        notifyIcon.ShowBalloonTip(3000);
-        void handler(object? s, System.EventArgs e)
-        {
-            notifyIcon.Visible = false;
-            notifyIcon.Dispose();
-            notifyIcon.BalloonTipClosed -= handler;
-        }
-        notifyIcon.BalloonTipClosed += handler;
-        var timer = new System.Timers.Timer(5000);
-        timer.Elapsed += (s, e) =>
-        {
-            notifyIcon.Visible = false;
-            notifyIcon.Dispose();
-            timer.Dispose();
-        };
-        timer.AutoReset = false;
-        timer.Start();
-    }
-
     public MainWindow(MainWindowViewModel viewModel)
     {
         try
