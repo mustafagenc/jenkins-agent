@@ -1102,7 +1102,7 @@ public class MainWindowViewModel : BaseViewModel
             StatusMessage = $"{job.Name} için Blue Ocean açılıyor...";
 
             // BlueOceanWindow'u aç
-            var blueOceanWindow = new Views.BlueOceanWindow(blueOceanUrl, job.Name);
+            var blueOceanWindow = new Views.BlueOceanWindow(blueOceanUrl, job.Name, _settingsService);
             blueOceanWindow.Show();
 
             StatusMessage = $"{job.Name} için Blue Ocean açıldı";

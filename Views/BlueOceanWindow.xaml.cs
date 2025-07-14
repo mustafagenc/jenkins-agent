@@ -1,3 +1,4 @@
+using JenkinsAgent.Services;
 using Microsoft.Web.WebView2.Core;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -14,6 +15,8 @@ public partial class BlueOceanWindow : Window, INotifyPropertyChanged
     private bool _isLoading = true;
     private string _loadingText = string.Empty;
     private string _blueOceanUrl = string.Empty;
+
+    private readonly SettingsService _settingsService;
 
     public string JobName
     {
@@ -41,10 +44,11 @@ public partial class BlueOceanWindow : Window, INotifyPropertyChanged
         set => SetProperty(ref _loadingText, value);
     }
 
-    public BlueOceanWindow(string blueOceanUrl, string jobName)
+    public BlueOceanWindow(string blueOceanUrl, string jobName, SettingsService settingsService)
     {
         InitializeComponent();
         DataContext = this;
+        _settingsService = settingsService;
 
         _blueOceanUrl = blueOceanUrl;
         JobName = jobName;
@@ -306,6 +310,32 @@ public partial class BlueOceanWindow : Window, INotifyPropertyChanged
 
             await BlueOceanWebView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(hideHeaderScript);
             await BlueOceanWebView.CoreWebView2.ExecuteScriptAsync(hideHeaderScript);
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Header gizleme hatası: {ex.Message}";
+            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "BlueOceanWindow.HideJenkinsHeaderAsync");
+        }
+    }
+
+    private async Task FillUsernameAsync()
+    {
+        try
+        {
+            var settings = await _settingsService.LoadSettingsAsync();
+            string username = settings.Jenkins.Username;
+            string fillUsernameScript = $@"
+                (function() {{
+                    var input = document.getElementById('j_username');
+                    if(input) {{
+                        input.value = '{username.Replace("'", "\\'")}';
+                        input.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                    }}
+                }})();
+            ";
+
+            await BlueOceanWebView.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(fillUsernameScript);
+            await BlueOceanWebView.CoreWebView2.ExecuteScriptAsync(fillUsernameScript);
         }
         catch (Exception ex)
         {
