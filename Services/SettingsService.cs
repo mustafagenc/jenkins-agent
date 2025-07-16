@@ -32,7 +32,6 @@ public class SettingsService
         await _settingsSemaphore.WaitAsync();
         try
         {
-            // Emin olmak için iki kez kontrol ediyorum
             if (_cachedSettings != null)
                 return _cachedSettings;
 
@@ -89,8 +88,8 @@ public class SettingsService
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"Settings save error: {ex.Message}");
-            JenkinsAgent.ViewModels.ErrorLogger.Log(ex, "SettingsService.SaveSettingsInternalAsync");
-            throw; // Hatanın üst katmana iletilmesini istiyorum
+            ViewModels.ErrorLogger.Log(ex, "SettingsService.SaveSettingsInternalAsync");
+            throw;
         }
     }
 

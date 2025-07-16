@@ -13,5 +13,7 @@ public class AppSettings
     public bool MinimizeToTray { get; set; } = true;
     public bool StartWithWindows { get; set; } = false;
     public int MonitoringIntervalSeconds { get; set; } = 3;
+    public bool NotifyOnJobStarted { get; set; } = true;
+    public bool NotifyOnJobCompleted { get; set; } = true;
     public DateTime LastUpdated { get; set; } = DateTime.Now;
 }

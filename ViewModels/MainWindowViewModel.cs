@@ -870,6 +870,10 @@ public class MainWindowViewModel : BaseViewModel
 
                             RunningBuilds.Add(runningJob);
                             LogDebug($"UpdateQueueAndExecutorsAsync - Added new running build: {runningJob.Name} on {computerName} executor {executor.Number} (progress: {displayProgress}%)");
+
+                            NotificationService.Show(
+                                               $"{runningJob.Name} job'ı başarıyla başlatıldı",
+                                                runningJob.Description, ToolTipIcon.Info);
                         }
                     }
                     else if (!executor.Idle)
