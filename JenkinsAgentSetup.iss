@@ -1,11 +1,11 @@
 [Setup]
 AppName=Jenkins Agent
-AppVersion=1.0.0
+AppVersion=1.0.2
 AppPublisher=Mustafa Genç
 AppPublisherURL=https://mustafagenc.info
 AppSupportURL=https://mustafagenc.info
 AppUpdatesURL=https://mustafagenc.info
-VersionInfoVersion=1.0.0
+VersionInfoVersion=1.0.2
 VersionInfoCompany=Mustafa Genç
 VersionInfoProductName=Jenkins Agent
 VersionInfoCopyright=Copyright © Mustafa Genç
